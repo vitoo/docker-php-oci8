@@ -9,8 +9,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 #codeception
 RUN curl -LsS https://codeception.com/codecept.phar -o /usr/local/bin/codecept && chmod a+x /usr/local/bin/codecept
 
-ARG php_version=7.2.12
-RUN php -r 'exit(substr(PHP_VERSION, 0, strlen(getenv("php_version"))) === getenv("php_version") ? 0 : 1);'
 
 #ORACLE oci 
 
@@ -35,13 +33,16 @@ RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # ORACLE PDO_OCI
 
+ARG php_version=7.2.12
+RUN php -r 'exit(substr(PHP_VERSION, 0, strlen(getenv("php_version"))) === getenv("php_version") ? 0 : 1);'
+
 RUN wget -O /tmp/php-${php_version}.zip \
         https://github.com/php/php-src/archive/php-${php_version}.zip
 RUN unzip /tmp/php-${php_version}.zip -d /tmp
 
 WORKDIR /tmp/php-src-php-${php_version}/ext/pdo_oci
 RUN phpize
-RUN ./configure --with-pdo-oci=/opt/oracle/instantclient
+RUN ./configure --with-pdo-oci=instantclient,/usr/local/instantclient
 RUN make install
 WORKDIR /
 RUN echo 'extension=pdo_oci.so' > /usr/local/etc/php/conf.d/pdo_oci.ini
