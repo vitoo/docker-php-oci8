@@ -1,0 +1,8 @@
+image: docker:latest
+
+build:
+  stage: build
+  script:
+    - docker build . -t codeception_kiabi
+  except:
+    - master
