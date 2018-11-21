@@ -3,12 +3,9 @@ FROM php:7.2
 RUN apt-get update && apt-get install -qqy git unzip libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
-        libaio1 wget
+        libaio1 wget && apt-get clean autoclean && apt-get autoremove --yes &&  rm -rf /var/lib/{apt,dpkg,cache,log}/ 
 #composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-#codeception
-RUN curl -LsS https://codeception.com/codecept.phar -o /usr/local/bin/codecept && chmod a+x /usr/local/bin/codecept
-
 
 # ORACLE oci 
 RUN mkdir /opt/oracle \
@@ -34,7 +31,3 @@ RUN echo 'instantclient,/opt/oracle/instantclient_12_1/' | pecl install oci8 \
        && docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_12_1,12.1 \
        && docker-php-ext-install \
                pdo_oci 
-
-# Clean
-
-RUN apt-get clean autoclean && apt-get autoremove --yes &&  rm -rf /var/lib/{apt,dpkg,cache,log}/ 
