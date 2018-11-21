@@ -1,9 +1,0 @@
-image: docker:latest
-
-stages:
-  - build
-
-build:
-  stage: build
-  script:
-    - docker build . -t codeception_kiabi
